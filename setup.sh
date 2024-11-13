@@ -56,4 +56,14 @@ else
     echo "Failed to unzip mednafen.zip. Please check the file path."
 fi
 
+# Step 6: Create ~/.alacritty-theme/themes directory and move flat-remix.yaml
+echo "Setting up Alacritty theme..."
+mkdir -p ~/.alacritty-theme/themes
+cp assets/flat-remix.yaml ~/.alacritty-theme/themes/
+if [[ $? -eq 0 ]]; then
+    echo "flat-remix.yaml theme file moved successfully."
+else
+    echo "Failed to move flat-remix.yaml. Please check file path."
+fi
+
 echo "Setup completed with any noted warnings."
