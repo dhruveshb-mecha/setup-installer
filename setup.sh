@@ -59,6 +59,12 @@ else
     echo "Failed to set .config directory permissions."
 fi
 
-
+echo "Extracting Papirus-PNG.zip to /usr/share/icons/..."
+sudo unzip -o assets/Papirus-PNG.zip -d /usr/share/icons/
+if [[ $? -eq 0 ]]; then
+echo "Papirus-PNG.zip extracted successfully."
+else
+echo "Failed to extract Papirus-PNG.zip. Please check the file path."
+fi
 
 echo "Setup completed with any noted warnings."
