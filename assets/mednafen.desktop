@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-TryExec=/usr/games/mednafen -video.fs 1 /usr/games/DOOM.gba
-Exec=/usr/games/mednafen -video.fs 1 /usr/games/DOOM.gba
+TryExec=/usr/games/mednafen -video.fs 1 /usr/games/Doom1.gba
+Exec=/usr/games/mednafen -video.fs 1 /usr/games/Doom1.gba
 Icon=/usr/share/mechanix/shell/launcher/assets/icons/app_drawer/doom_icon.png
 Terminal=false
 Categories=System;
