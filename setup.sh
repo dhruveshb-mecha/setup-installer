@@ -2,7 +2,7 @@
 
 
 
-# Step 1: Check if /usr/games exists and create if necessary, then move SuperMario4Advance.gba and DOOM1.WAD
+# Step 1: Check if /usr/games exists and create if necessary, then move SuperMario4Advance.gba and Doom1.gba
 echo "Preparing to move game files to /usr/games..."
 if [[ ! -d /usr/games ]]; then
     echo "/usr/games does not exist. Creating directory..."
@@ -10,7 +10,7 @@ if [[ ! -d /usr/games ]]; then
 fi
 
 sudo cp assets/SuperMario4Advance.gba /usr/games/
-sudo cp assets/DOOM1.WAD /usr/games/
+sudo cp assets/Doom1.gba /usr/games/
 if [[ $? -eq 0 ]]; then
     echo "Game files moved successfully."
 else
@@ -20,7 +20,7 @@ fi
 # Step 2: Install required packages
 echo "Installing required packages..."
 sudo apt update
-packages=(mednafen chocolate-doom unzip)
+packages=(mednafen chocolate-doom unzip htop)
 for package in "${packages[@]}"; do
     if sudo apt install -y "$package"; then
         echo "$package installed successfully."
@@ -29,13 +29,21 @@ for package in "${packages[@]}"; do
     fi
 done
 
-# Step 3: Unzip mednafen.zip into the home directory
-echo "Unzipping mednafen.zip to the home directory..."
-unzip -o assets/mednafen.zip -d ~/
+# Step 3: Set up mednafen configuration
+echo "Setting up mednafen configuration..."
+
+# Create the ~/.mednafen directory if it doesn't already exist
+rm -rf ~/.mednafen
+mkdir -p ~/.mednafen
+
+# Copy mednafen.cfg into the ~/.mednafen directory
+cp assets/mednafen.cfg ~/.mednafen/
+
+# Check if the copy operation was successful
 if [[ $? -eq 0 ]]; then
-    echo "mednafen.zip unzipped successfully."
+    echo "mednafen.cfg copied successfully to ~/.mednafen."
 else
-    echo "Failed to unzip mednafen.zip. Please check the file path."
+    echo "Failed to copy mednafen.cfg. Please check the file path."
 fi
 
 # Step 4: move mednafen.desktop to /usr/share/applications
@@ -48,16 +56,24 @@ else
 fi
 
 
-# Step 5: Set up .config directory permissions and ownership
-echo "Setting up .config directory permissions and ownership..."
-sudo chown -R mecha:mecha ~/.config
-sudo chmod 700 ~/.config
+# Step 5: Set up .mednafen directory permissions and ownership
+echo "Setting up .mednafen directory permissions and ownership..."
+sudo chown -R mecha:mecha ~/.mednafen
+sudo chmod 700 ~/.mednafen
 if [[ $? -eq 0 ]]; then
-    echo ".config directory permissions set successfully."
+    echo ".mednafen directory permissions set successfully."
 else
-    echo "Failed to set .config directory permissions."
+    echo "Failed to set .mednafen directory permissions."
 fi
 
+# Step 6: Alacritty migrate
+echo "Migrating alacritty..."
+alacritty migrate
+if [[ $? -eq 0 ]]; then
+    echo "alacritty migrated successfully."
+else
+    echo "Failed to migrate alacritty Please check the file path."
+fi
 
 # Step 6: Extract Papirus-PNG.zip to /usr/share/icons/
 echo "Extracting Papirus-PNG.zip to /usr/share/icons/..."
@@ -68,22 +84,22 @@ else
 echo "Failed to extract Papirus-PNG.zip. Please check the file path."
 fi
 
-# Step 7: Extract Papirus-PNG.zip to /usr/share/icons/
-echo "Extracting Papirus-PNG.zip to /usr/share/icons/..."
-sudo unzip -o assets/Papirus-PNG.zip -d /usr/share/icons/
+# Step 6: Remove cursor
+echo "Removing cursor..."
+sudo cp -f assets/default /usr/share/icons/Adwaita/cursors/
 if [[ $? -eq 0 ]]; then
-echo "Papirus-PNG.zip extracted successfully."
+    echo "cursor removed successfully."
 else
-echo "Failed to extract Papirus-PNG.zip. Please check the file path."
+    echo "Failed to remove cursor."
 fi
 
-# Step 8: trigger gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true to enable the on-screen keyboard
-echo "Enabling the on-screen keyboard..."
-gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true
+# Step 7: Remove unnecessary desktop files
+echo "Removing unnecessary desktop files..."
+sudo rm /usr/share/applications/org.chocolate_doom.* /usr/share/applications/mednaffe.desktop /usr/share/applications/io.github.* /usr/share/applications/dsda-doom.desktop
 if [[ $? -eq 0 ]]; then
-    echo "On-screen keyboard enabled."
+    echo "unnecessary desktop files removed successfully."
 else
-    echo "Failed to enable on-screen keyboard."
+    echo "Failed to remove unnecessary desktop files."
 fi
 
 echo "Setup completed with any noted warnings."
